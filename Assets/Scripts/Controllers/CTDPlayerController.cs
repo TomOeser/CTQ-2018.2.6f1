@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-
+/*
 public class CTDPlayerController : Bolt.EntityBehaviour<ICTDPlayerState>
 {
     //public TextMesh playerNameText;
@@ -21,7 +21,7 @@ public class CTDPlayerController : Bolt.EntityBehaviour<ICTDPlayerState>
         /*state.AddCallback("Color", () =>
         {
             GetComponent<MeshRenderer>().material.color = state.Color;
-        });*/
+        });* /
 
         state.AddCallback("Name", () =>
         {
@@ -72,7 +72,7 @@ public class CTDPlayerController : Bolt.EntityBehaviour<ICTDPlayerState>
     public static void Spawn()
     {
         var pos = new Vector3(Random.Range(-2, 2), 1f, 0f);
-        BoltEntity playerEntity = BoltNetwork.Instantiate(BoltPrefabs.CTDPlayer, pos, Quaternion.identity);
+        BoltEntity playerEntity = BoltNetwork.Instantiate(BoltPrefabs.Player, pos, Quaternion.identity);
         playerEntity.TakeControl();
         //HERE
 
@@ -90,3 +90,4 @@ public class CTDPlayerController : Bolt.EntityBehaviour<ICTDPlayerState>
         }
     }
 }
+*/

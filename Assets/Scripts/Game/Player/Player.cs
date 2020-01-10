@@ -80,6 +80,7 @@ public partial class Player : IDisposable
 
     public void InstantiateEntity()
     {
+        
         entity = BoltNetwork.Instantiate(BoltPrefabs.Player, new TestToken(), RandomSpawn(), Quaternion.identity);
 
         state.name = name;
@@ -137,6 +138,6 @@ partial class Player
     {
         float x = UnityEngine.Random.Range(-5f, +5f);
         //float z = UnityEngine.Random.Range(-32f, +32f);
-        return new Vector3(x, 0, 0);
+        return new Vector3(x, 1, 0);
     }
 }
