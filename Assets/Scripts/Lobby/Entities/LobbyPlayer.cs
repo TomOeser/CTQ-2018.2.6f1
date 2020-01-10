@@ -13,8 +13,6 @@ public class LobbyPlayer : Bolt.EntityEventListener<ILobbyPlayerState>
     // Bolt
     public BoltConnection connection;
 
-
-
     public bool IsReady
     {
         get { return state.Ready; }
@@ -42,7 +40,7 @@ public class LobbyPlayer : Bolt.EntityEventListener<ILobbyPlayerState>
     {
         BoltConsole.Write(string.Format("HERE LobbyPlayer.Attached: {0}", state.Name), Color.yellow);
         Debug.Log(string.Format("HERE LobbyPlayer.Attached: {0}", state.Name));
-        state.AddCallback("Name", () => { /*nameInput.text = state.Name;*/ nameText.text = state.Name; });
+        state.AddCallback("Name", () => /*{*/ nameInput.text = state.Name/*; nameText.text = state.Name; }*/);
         state.AddCallback("Team", callback: () => OnClientChangeTeam(state.Team));
         state.AddCallback("Ready", callback: () => OnClientReady(state.Ready));
 
@@ -54,7 +52,7 @@ public class LobbyPlayer : Bolt.EntityEventListener<ILobbyPlayerState>
             state.Team = team = 0;
             state.Ready = ready = false;
 
-            nameInput.text = state.Name;
+            //nameInput.text = state.Name;
         }
     }
 
@@ -90,7 +88,7 @@ public class LobbyPlayer : Bolt.EntityEventListener<ILobbyPlayerState>
             LobbyCommand lobbyCommand = command as LobbyCommand;
             ILobbyCommandInput input = lobbyCommand.Input;
 
-            state.Name = String.IsNullOrWhiteSpace(input.Name) ? "Unnamed" : input.Name;
+            state.Name = input.Name;
             state.Team = input.Team;
             state.Ready = input.Ready;
         }

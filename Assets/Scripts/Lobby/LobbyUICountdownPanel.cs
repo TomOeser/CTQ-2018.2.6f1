@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class LobbyUICountdownPanel : MonoBehaviour
+public class LobbyUICountdownPanel : MonoBehaviour, ILobbyUI
 {
     [SerializeField] private Text countdownText;
 

@@ -1,66 +1,28 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System;
-using UnityEngine.UI;
 using UdpKit;
 using Bolt.Matchmaking;
 using Bolt;
 
-public enum LobbyShowPanelState
-{
-    StartPanel,
-    ServerPanel,
-    SearchGamePanel,
-    ClientPanel,
-    TeamPanel
-}
-
 public partial class LobbyManager : Bolt.GlobalEventListener
 {
     public static LobbyManager Instance;
-
-    [Header("Panels")]
-    [SerializeField] private GameObject _startPanel;
-    [SerializeField] private GameObject _serverPanel;
-    [SerializeField] private GameObject _searchGamePanel;
-    //[SerializeField] private GameObject _clientPanel;
-    [SerializeField] private GameObject _teamPanel;
-
-    [Header("Server Related")]
-    [SerializeField] private InputField _matchNameInputField;
-    [SerializeField] private Slider _maxPlayersSlider;
-
-    [Header("Client Related")]
-    //[SerializeField] private GameObject lobbyPlayerEntryPrefab;
-    [SerializeField] private RectTransform _playerListContent;
 
     [Header("Ready Check and Playercount")]
     [SerializeField] private int minPlayers = 2;
     [Tooltip("Time in seconds between all players ready and match start")]
     [SerializeField] [Range(0.0f, 10.0f)] private float prematchCountdown = 5.0f;
 
-    private LobbyShowPanelState _lobbyShowPanel = LobbyShowPanelState.StartPanel;
     private int maxPlayers = 6;
     private static string DefaultMatchName { get { return "Capture the Quak"; } }
     private string matchName = DefaultMatchName;
 
     private bool isCountdownActive = false;
 
-    public LobbyShowPanelState ActivePanelState
-    {
-        get { return _lobbyShowPanel; }
-        set
-        {
-            _lobbyShowPanel = value;
-            ShowPanel();
-        }
-    }
-
     private void Awake()
     {
         BoltLauncher.SetUdpPlatform(new PhotonPlatform());
-        ShowPanel();
     }
 
     public new void OnEnable()
@@ -143,91 +105,10 @@ public partial class LobbyManager : Bolt.GlobalEventListener
         countdown.Time = 0;
         countdown.Send();
 
-        BoltConsole.Write("Game should start now");
-
-        //BoltNetwork.LoadScene(gameScene.SimpleSceneName);
+        BoltNetwork.LoadScene("GameScene");
     }
 
-    public void OnHostGameButtonClicked()
-    {
-        Debug.Log("OnHostGameButtonClicked");
-        ActivePanelState = LobbyShowPanelState.ServerPanel;
-    }
-    public void OnSearchGameButtonClicked()
-    {
-        Debug.Log("OnSearchGameButtonClicked");
-        //ClearServerListUI();
-        ActivePanelState = LobbyShowPanelState.SearchGamePanel;
-        BoltLauncher.StartClient();
-    }
-    public void OnBackButtonClicked()
-    {
-        Debug.Log("OnBackButtonClicked");
 
-        if (BoltNetwork.IsClient)
-        {
-            if (ActivePanelState == LobbyShowPanelState.SearchGamePanel)
-            {
-                BoltLauncher.Shutdown();
-                ActivePanelState = LobbyShowPanelState.StartPanel;
-            }
-            else if (ActivePanelState == LobbyShowPanelState.TeamPanel)
-            {
-                ActivePanelState = LobbyShowPanelState.SearchGamePanel;
-            }
-        }
-        else if (BoltNetwork.IsServer)
-        {
-            Debug.Log("OnBackButtonClicked IsServer: true");
-            if (ActivePanelState == LobbyShowPanelState.ServerPanel)
-            {
-                if (BoltNetwork.IsConnected)
-                {
-                    BoltLauncher.Shutdown();
-                    BoltNetwork.Shutdown();
-                }
-                ActivePanelState = LobbyShowPanelState.StartPanel;
-            }
-
-            if (BoltNetwork.IsConnected)
-            {
-                BoltLauncher.Shutdown();
-                BoltNetwork.Shutdown();
-            }
-            ActivePanelState = LobbyShowPanelState.StartPanel;
-        }
-        else
-        {
-            Debug.Log(BoltNetwork.IsServer + " " + BoltNetwork.IsClient + " " + BoltNetwork.IsConnected);
-            ActivePanelState = LobbyShowPanelState.StartPanel;
-        }
-    }
-
-    private void ShowPanel()
-    {
-        _startPanel.SetActive(false);
-        _serverPanel.SetActive(false);
-        _searchGamePanel.SetActive(false);
-        //_clientPanel.SetActive(false);
-        _teamPanel.SetActive(false);
-
-        switch (_lobbyShowPanel)
-        {
-            case LobbyShowPanelState.StartPanel:
-                _startPanel.SetActive(true);
-                break;
-            case LobbyShowPanelState.ServerPanel:
-                _serverPanel.SetActive(true);
-                break;
-            case LobbyShowPanelState.SearchGamePanel:
-                _searchGamePanel.SetActive(true);
-                break;
-            case LobbyShowPanelState.TeamPanel:
-                _teamPanel.SetActive(true);
-                break;
-        }
-        Debug.Log("ShowPanel");
-    }
 
     public override void BoltStartBegin()
     {
@@ -256,22 +137,7 @@ public partial class LobbyManager : Bolt.GlobalEventListener
                 token: token
             );
         }
-        else if (BoltNetwork.IsClient)
-        {
-            /*if (randomJoin)
-            {
-                BoltMatchmaking.JoinRandomSession();
-            }
-            else
-            {
-                ClientStaredUIHandler();
-            }
-
-            randomJoin = false;*/
-        }
     }
-
-
 
 
     // Extension after rebuild
@@ -306,10 +172,7 @@ public partial class LobbyManager : Bolt.GlobalEventListener
 
     public override void SessionCreated(UdpSession session)
     {
-        Debug.Log(string.Format("HERE LobbyManager.SessionCreated: {0}", session));
-        BoltConsole.Write(string.Format("HERE LobbyManager.SessionCreated: {0}", session), Color.magenta);
-
-        ActivePanelState = LobbyShowPanelState.TeamPanel;
+        ChangeToPanel(lobbyUIRoomPanel);
 
         // Build Server Entity
         var entity = BoltNetwork.Instantiate(BoltPrefabs.LobbyPlayer);
@@ -318,21 +181,20 @@ public partial class LobbyManager : Bolt.GlobalEventListener
 
     public override void EntityAttached(BoltEntity entity)
     {
-        Debug.Log(string.Format("HERE LobbyManager.EntityAttached: {0}", entity));
-        BoltConsole.Write(string.Format("HERE LobbyManager.EntityAttached: {0}", entity), Color.magenta);
-
-        EntityAttachedEventHandler(entity);
-
-        var lobbyPlayer = entity.gameObject.GetComponent<LobbyPlayer>();
-        if (lobbyPlayer)
+        if (entity.StateIs<ILobbyPlayerState>())
         {
-            if (entity.IsControlled)
+            EntityAttachedEventHandler(entity);
+            var lobbyPlayer = entity.gameObject.GetComponent<LobbyPlayer>();
+            if (lobbyPlayer)
             {
-                lobbyPlayer.SetupLocalPlayer();
-            }
-            else
-            {
-                lobbyPlayer.SetupOtherPlayer();
+                if (entity.IsControlled)
+                {
+                    lobbyPlayer.SetupLocalPlayer();
+                }
+                else
+                {
+                    lobbyPlayer.SetupOtherPlayer();
+                }
             }
         }
     }
@@ -343,7 +205,8 @@ public partial class LobbyManager : Bolt.GlobalEventListener
         {
             BoltConsole.Write(string.Format("HERE Client Connected: {0}", connection), Color.yellow);
             Debug.Log(string.Format("HERE Client Connected: {0}", connection));
-            ActivePanelState = LobbyShowPanelState.TeamPanel;
+
+            ChangeToPanel(lobbyUIRoomPanel);
         }
         else if (BoltNetwork.IsServer)
         {
@@ -354,6 +217,11 @@ public partial class LobbyManager : Bolt.GlobalEventListener
             entity.AssignControl(connection);
         }
 
+        BoltConsole.Write("Connected", Color.red);
+
+        connection.UserData = new Player();
+        connection.GetPlayer().connection = connection;
+        connection.GetPlayer().name = "CLIENT:" + connection.RemoteEndPoint.Port;
     }
 
     public override void Disconnected(BoltConnection connection)
