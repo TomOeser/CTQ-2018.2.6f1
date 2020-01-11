@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
 #if UNITY_EDITOR
@@ -26,7 +27,7 @@ public class CSVValueLookup : MonoBehaviour {
 			Destroy(gameObject);
 		}
 
-		Instance = this; //GameObject.FindObjectOfType<CSVValueLookup>();
+		Instance = this;
 			
 		if(Application.isPlaying)
 			DontDestroyOnLoad(gameObject);
@@ -77,9 +78,16 @@ public class CSVValueLookup : MonoBehaviour {
 
 	[ContextMenu("Save CSV Values")]
 	public void SaveCSVValues(){
-		// if references, overwrite
-		// if reference empty, save list as new file and save as reference "CSVFile" in script
-		// ... du (geiles) Stück Pute
+		
+		string temp = "";
+			
+		for(int i = 0; i < valueList.Count; i++){
+			temp += valueList[i].ToCSVString() + "\n";
+		}
+			
+		File.WriteAllText(Application.dataPath + "/Scripts/Game/Balancing/CSVValues.csv", temp);
+		AssetDatabase.SaveAssets();
+		AssetDatabase.Refresh();
 	}
 }
 
@@ -87,6 +95,10 @@ public class CSVValueLookup : MonoBehaviour {
 public class CSVValue {
 	public string name;
 	public float value;
+
+	public string ToCSVString(){
+		return name + "," + value.ToString().Replace(",",".");
+	}
 }
 
 [System.Serializable]
