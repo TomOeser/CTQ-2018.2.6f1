@@ -80,7 +80,7 @@
           },
           "AssetSettings": {
             "$type": "Bolt.Compiler.PropertyStateSettings, bolt.compiler",
-            "SmoothingAlgorithm": 2,
+            "SmoothingAlgorithm": 1,
             "ExtrapolationErrorTolerance": 0.25,
             "_ExtrapolationCorrectionFrames": 6,
             "ExtrapolationMaxFrames": 9,
@@ -97,8 +97,7 @@
           "PropertyType": {
             "$type": "Bolt.Compiler.PropertyTypeInteger, bolt.compiler",
             "MinValue": 1,
-            "MaxValue": 2,
-            "CompressionEnabled": true
+            "MaxValue": 2
           },
           "AssetSettings": {
             "$type": "Bolt.Compiler.PropertyStateSettings, bolt.compiler",
@@ -129,6 +128,7 @@
         {
           "Name": "pitch",
           "Enabled": true,
+          "Expanded": true,
           "Comment": "",
           "Priority": 1,
           "PropertyType": {
@@ -192,6 +192,7 @@
         {
           "Name": "deaths",
           "Enabled": true,
+          "Expanded": true,
           "ReplicationMode": 1,
           "Comment": "",
           "Priority": 1,
@@ -210,6 +211,7 @@
         {
           "Name": "Dead",
           "Enabled": true,
+          "Expanded": true,
           "ReplicationMode": 1,
           "Comment": "",
           "Priority": 1,
@@ -221,13 +223,13 @@
             "ExtrapolationErrorTolerance": 0.1,
             "_ExtrapolationCorrectionFrames": 3,
             "ExtrapolationMaxFrames": 9,
-            "MecanimMode": 1,
             "MecanimDirection": 1
           }
         },
         {
           "Name": "respawnFrame",
           "Enabled": true,
+          "Expanded": true,
           "ReplicationMode": 1,
           "Comment": "",
           "Priority": 1,
@@ -286,7 +288,6 @@
             "ExtrapolationErrorTolerance": 0.1,
             "_ExtrapolationCorrectionFrames": 3,
             "ExtrapolationMaxFrames": 9,
-            "MecanimMode": 1,
             "MecanimDirection": 1,
             "MecanimDamping": 0.05
           }
@@ -314,7 +315,6 @@
             "ExtrapolationErrorTolerance": 0.1,
             "_ExtrapolationCorrectionFrames": 3,
             "ExtrapolationMaxFrames": 9,
-            "MecanimMode": 1,
             "MecanimDirection": 1,
             "MecanimDamping": 0.05
           }
@@ -333,7 +333,6 @@
             "ExtrapolationErrorTolerance": 0.1,
             "_ExtrapolationCorrectionFrames": 3,
             "ExtrapolationMaxFrames": 9,
-            "MecanimMode": 1,
             "MecanimDirection": 1
           }
         },
@@ -351,7 +350,6 @@
             "ExtrapolationErrorTolerance": 0.1,
             "_ExtrapolationCorrectionFrames": 3,
             "ExtrapolationMaxFrames": 9,
-            "MecanimMode": 1,
             "MecanimDirection": 1
           }
         },
@@ -369,7 +367,6 @@
             "ExtrapolationErrorTolerance": 0.1,
             "_ExtrapolationCorrectionFrames": 3,
             "ExtrapolationMaxFrames": 9,
-            "MecanimMode": 1,
             "MecanimDirection": 1,
             "MecanimLayer": 1
           }
@@ -377,6 +374,7 @@
         {
           "Name": "tokenTest",
           "Enabled": true,
+          "Expanded": true,
           "ReplicationMode": 1,
           "Priority": 1,
           "PropertyType": {
@@ -458,7 +456,7 @@
           "BitsRequired": 8
         }
       },
-      "Name": "PlayerStateOLD",
+      "Name": "PlayerState",
       "Guid": "d9c5e788-3119-431f-a329-d0cf9b074721",
       "Comment": "",
       "Groups": [
@@ -1269,7 +1267,7 @@
           "BitsRequired": 8
         }
       },
-      "Name": "PlayerState",
+      "Name": "PlayerState_wrong",
       "Guid": "2e379201-4e91-456e-b44c-8e178fe4a741",
       "Groups": []
     }

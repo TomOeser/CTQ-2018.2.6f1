@@ -30,10 +30,10 @@ public partial class Player : IDisposable
 
 
     internal void Spawn()
-    { 
+    {
         if (entity)
         {
-            state.dead = false;
+            state.Dead = false;
             state.health = 100;
 
             // teleport
@@ -45,7 +45,7 @@ public partial class Player : IDisposable
     {
         if (entity)
         {
-            state.dead = true;
+            state.Dead = true;
             state.respawnFrame = BoltNetwork.ServerFrame + (15 * BoltNetwork.FramesPerSecond);
         }
     }
@@ -80,7 +80,7 @@ public partial class Player : IDisposable
 
     public void InstantiateEntity()
     {
-        
+        BoltConsole.Write("InstantiateEntity " + isServer);
         entity = BoltNetwork.Instantiate(BoltPrefabs.Player, new TestToken(), RandomSpawn(), Quaternion.identity);
 
         state.name = name;

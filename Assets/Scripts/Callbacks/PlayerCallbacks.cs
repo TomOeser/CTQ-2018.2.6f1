@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-[BoltGlobalBehaviour("GameScene")]
+[BoltGlobalBehaviour("Testlevel")]
 public class PlayerCallbacks : Bolt.GlobalEventListener
 {
     public override void SceneLoadLocalDone(string scene)
@@ -14,21 +14,22 @@ public class PlayerCallbacks : Bolt.GlobalEventListener
 
     public override void SceneLoadLocalBegin(string scene, Bolt.IProtocolToken token)
     {
-        BoltLog.Info("SceneLoadLocalBegin-Token: {0}", token);
+        BoltLog.Info("PlayerCallbacks:SceneLoadLocalBegin-Token: {0}", token);
     }
 
     public override void SceneLoadLocalDone(string scene, Bolt.IProtocolToken token)
     {
-        BoltLog.Info("SceneLoadLocalDone-Token: {0}", token);
+        BoltLog.Info("PlayerCallbacks:SceneLoadLocalDone-Token: {0}", token);
     }
 
     public override void SceneLoadRemoteDone(BoltConnection connection, Bolt.IProtocolToken token)
     {
-        BoltLog.Info("SceneLoadRemoteDone-Token: {0}", token);
+        BoltLog.Info("PlayerCallbacks:SceneLoadRemoteDone-Token: {0}", token);
     }
 
     public override void ControlOfEntityGained(BoltEntity entity)
     {
+        BoltLog.Info("PlayerCallbacks:ControlOfEntityGained: {0}", entity);
         // add audio listener to our character
         entity.gameObject.AddComponent<AudioListener>();
 

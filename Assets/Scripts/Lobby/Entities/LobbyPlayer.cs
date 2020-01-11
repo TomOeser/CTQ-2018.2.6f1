@@ -38,8 +38,8 @@ public class LobbyPlayer : Bolt.EntityEventListener<ILobbyPlayerState>
 
     public override void Attached()
     {
-        BoltConsole.Write(string.Format("HERE LobbyPlayer.Attached: {0}", state.Name), Color.yellow);
-        Debug.Log(string.Format("HERE LobbyPlayer.Attached: {0}", state.Name));
+        BoltConsole.Write(string.Format("LobbyPlayer:Attached: {0}", state.Name), Color.yellow);
+        Debug.Log(string.Format("LobbyPlayer:Attached: {0}", state.Name));
         state.AddCallback("Name", () => /*{*/ nameInput.text = state.Name/*; nameText.text = state.Name; }*/);
         state.AddCallback("Team", callback: () => OnClientChangeTeam(state.Team));
         state.AddCallback("Ready", callback: () => OnClientReady(state.Ready));

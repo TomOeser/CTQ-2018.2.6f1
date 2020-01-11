@@ -105,7 +105,7 @@ public partial class LobbyManager : Bolt.GlobalEventListener
         countdown.Time = 0;
         countdown.Send();
 
-        BoltNetwork.LoadScene("GameScene");
+        BoltNetwork.LoadScene("Testlevel");
     }
 
 
@@ -203,21 +203,21 @@ public partial class LobbyManager : Bolt.GlobalEventListener
     {
         if (BoltNetwork.IsClient)
         {
-            BoltConsole.Write(string.Format("HERE Client Connected: {0}", connection), Color.yellow);
-            Debug.Log(string.Format("HERE Client Connected: {0}", connection));
+            BoltConsole.Write(string.Format("LobbyManager:Connected Client conntected: {0}", connection), Color.yellow);
+            Debug.Log(string.Format("LobbyManager:Connected Client connected: {0}", connection));
 
             ChangeToPanel(lobbyUIRoomPanel);
         }
         else if (BoltNetwork.IsServer)
         {
-            BoltConsole.Write(string.Format("HERE Server Connected: {0}", connection), Color.yellow);
-            Debug.Log(string.Format("HERE Server Connected: {0}", connection));
+            BoltConsole.Write(string.Format("LobbyManager:Connected Server connected: {0}", connection), Color.yellow);
+            Debug.Log(string.Format("LobbyManager:Connected Server connected: {0}", connection));
 
             var entity = BoltNetwork.Instantiate(BoltPrefabs.LobbyPlayer);
             entity.AssignControl(connection);
         }
 
-        BoltConsole.Write("Connected", Color.red);
+        BoltConsole.Write("LobbyManager:Connected", Color.red);
 
         connection.UserData = new Player();
         connection.GetPlayer().connection = connection;

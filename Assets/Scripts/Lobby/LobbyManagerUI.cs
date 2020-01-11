@@ -147,7 +147,7 @@ public partial class LobbyManager
 
         try
         {
-            if (scene == "GameScene")
+            if (scene == "Testlevel")
             {
                 // Hiding the LobbyManager
                 ChangeToPanel(null);
