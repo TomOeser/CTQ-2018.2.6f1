@@ -72,7 +72,7 @@ public class PlayerController : Bolt.EntityEventListener<IPlayerState>
 
         entity.QueueInput(input);*/
 
-        IPlayerCommandInput input = PlayerCommand.Create();
+        /*IPlayerCommandInput input = PlayerCommand.Create();
 
         input.
 
@@ -84,15 +84,12 @@ public class PlayerController : Bolt.EntityEventListener<IPlayerState>
         if (movement != Vector3.zero)
         {
             transform.position = transform.position + (movement.normalized * speed * BoltNetwork.FrameDeltaTime);
-        }
-
-
-
+        }*/
 
     }
     public override void ExecuteCommand(Bolt.Command c, bool resetState)
     {
-        if (state.dead) return;
+        /*if (state.dead) return;
 
         PlayerCommand cmd = (PlayerCommand)c;
 
@@ -100,40 +97,41 @@ public class PlayerController : Bolt.EntityEventListener<IPlayerState>
 			{
 				_motor.SetState(cmd.Result.position, cmd.Result.velocity, cmd.Result.isGrounded, cmd.Result.jumpFrames);
 			}
-			else
-			{
-				// move and save the resulting state
-				var result = _motor.Move(cmd.Input.forward, cmd.Input.backward, cmd.Input.left, cmd.Input.right, cmd.Input.jump, cmd.Input.yaw);
+        {
+            
+        }
+        else
+        {
+            // move and save the resulting state
+            cmd.Result.velocity = result.velocity;
 
-				cmd.Result.position = result.position;
-				cmd.Result.velocity = result.velocity;
-				cmd.Result.jumpFrames = result.jumpFrames;
-				cmd.Result.isGrounded = result.isGrounded;
+            cmd.Result.isGrounded = result.isGroun
+            
+            if (cmd.IsFirstExecution)
+            {
 
-				if (cmd.IsFirstExecution)
-				{
-					// animation
-					AnimatePlayer(cmd);
+            	AnimatePlayer(cmd);
+            {
+                // animation
+                state.pitch = cmd.I
 
-					// set state pitch
-					state.pitch = cmd.Input.pitch;
-					state.weapon = cmd.Input.weapon;
-					state.Aiming = cmd.Input.aiming;
+                // set state pitch
+                
+                // deal with weapons
+                if (cmd.Input.aiming && cmd.Inpu
 
-					// deal with weapons
-					if (cmd.Input.aiming && cmd.Input.fire)
-					{
-						FireWeapon(cmd);
-					}
-				}
+                // deal with weapons
+                }
+                {
+                    
+                }
+            }
 
-				if (entity.IsOwner)
-				{
-					cmd.Result.Token = new TestToken();
-				}
-			}
+            }
+            {
+                
+            }*/
     }
-
 
 
     // Start is called before the first frame update
