@@ -53,11 +53,12 @@ public class CSVValueLookup : MonoBehaviour {
 
 		valueList = new List<CSVValue>();
 
-		string[] lines = CSVFile.text.Split('\n');
+		string[] lines = CSVFile.text.Trim().Split('\n');
 		for(int l = 0; l < lines.Length; l++){
 			string[] data = lines[l].Split(',');
 			float result = float.MaxValue;
-			if(!float.TryParse(data[1], out result)) {
+
+			if(!float.TryParse(data[1], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out result)) {
 				Debug.LogError(data[0] + " can not be parsed");
 				continue;
 			}

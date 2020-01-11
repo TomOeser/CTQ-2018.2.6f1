@@ -213,6 +213,92 @@ Prefab:
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2395be494af1c6140a73b5ae5a160558, type: 2}
   m_IsPrefabAsset: 0
+--- !u!1 &1845395224
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1845395226}
+  - component: {fileID: 1845395225}
+  m_Layer: 0
+  m_Name: CSV Converter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1845395225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1845395224}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06c238603c7f09f4fb92946c59c78909, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CSVFile: {fileID: 4900000, guid: aa09cfc68362945489dd3dcb61e01086, type: 3}
+  valueList:
+  - name: p_movespeed
+    value: 10.5
+  - name: p_health
+    value: 3
+  - name: p_mana
+    value: 3
+  - name: p_respawn_timer
+    value: 10.5
+  - name: p_flying_speed
+    value: 10.5
+  - name: p_flying_boost_strength
+    value: 10.5
+  - name: p_projectile_damage
+    value: 3
+  - name: p_projectile_speed
+    value: 10.5
+  - name: p_faction
+    value: 1
+  - name: p_fire_rate
+    value: 10.5
+  - name: g_recepy_length
+    value: 3
+  - name: g_number_of_recepies
+    value: 3
+  - name: g_bounty_deaths
+    value: 3
+  - name: g_circle_unlock
+    value: 10.5
+  - name: g_team_size
+    value: 3
+  - name: u_health
+    value: 3
+  - name: u_movespeed
+    value: 10.5
+  - name: u_horn_decay
+    value: 10.5
+  - name: u_spawn_timer
+    value: 10.5
+  - name: d_movespeed
+    value: 10.5
+  - name: d_flight_height
+    value: 10.5
+  - name: d_struggle_start
+    value: 10.5
+--- !u!4 &1845395226
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1845395224}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 567.2257, y: 316.69806, z: -391.809}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2144598695
 GameObject:
   m_ObjectHideFlags: 0
