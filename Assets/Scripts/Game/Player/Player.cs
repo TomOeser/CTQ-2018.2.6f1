@@ -38,7 +38,6 @@ public partial class Player : IDisposable
 
             // teleport
             entity.transform.position = RandomSpawn();
-            state.team = team;
         }
     }
 
