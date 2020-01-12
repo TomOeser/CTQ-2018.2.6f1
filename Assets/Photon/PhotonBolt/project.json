@@ -410,6 +410,7 @@
           "Name": "BalanceSettingsChanged",
           "Enabled": true,
           "Expanded": true,
+          "ReplicationMode": 2,
           "Priority": 1,
           "PropertyType": {
             "$type": "Bolt.Compiler.PropertyTypeTrigger, bolt.compiler"
