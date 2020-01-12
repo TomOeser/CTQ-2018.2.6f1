@@ -128,7 +128,6 @@ public class PlayerMotor : MonoBehaviour
         // Tom: Since we not using z-axis... commend it out and forcing z-movement to always be zero, nade, niente, nix, null
         /*if (forward ^ backward)
 		{
-            
 			movingDir.z = forward ? +1 : -1;
 		}*/
 

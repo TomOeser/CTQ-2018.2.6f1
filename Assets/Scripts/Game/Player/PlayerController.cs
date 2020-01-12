@@ -23,13 +23,18 @@ public class PlayerController : Bolt.EntityEventListener<IPlayerState>
     float yaw;
     float pitch;
 
+    Quaternion weaponArmRotation;
+
     PlayerMotor _motor;
 
     CinemachineVirtualCamera cinemachineVirtualCamera;
 
+    Transform rightShoulder;
+
     void Awake()
     {
         _motor = GetComponent<PlayerMotor>();
+        rightShoulder = entity.transform.Find("Shoulder_Right");
     }
 
     public override void Attached()
@@ -45,6 +50,9 @@ public class PlayerController : Bolt.EntityEventListener<IPlayerState>
         });*/
 
         state.SetTransforms(state.transform, transform);
+        state.SetTransforms(state.shoulderRightTransform, transform.Find("Shoulder_Right"));
+        state.armRot = state.shoulderRightTransform.Rotation;
+
         //state.SetAnimator(GetComponentInChildren<Animator>());
 
         // setting layerweights 
@@ -58,6 +66,8 @@ public class PlayerController : Bolt.EntityEventListener<IPlayerState>
         //WeaponChanged();
 
         //gameObject.GetComponent<MeshRenderer>().material.color = state.team == 0 ? Color.blue : Color.red;
+
+        state.OnFire += OnFire;
 
         if (entity.IsOwner)
         {
@@ -90,6 +100,8 @@ public class PlayerController : Bolt.EntityEventListener<IPlayerState>
     {
         cinemachineVirtualCamera = GameObject.Find("CM Cam").GetComponent<CinemachineVirtualCamera>();
         cinemachineVirtualCamera.Follow = entity.transform;
+
+        //rightShoulder = entity.transform.Find("Shoulder_Right");
     }
 
     void OnBalanceSettingsChanged()
@@ -118,7 +130,7 @@ public class PlayerController : Bolt.EntityEventListener<IPlayerState>
         left = Input.GetKey(KeyCode.A);
         right = Input.GetKey(KeyCode.D);
         jump = Input.GetKey(KeyCode.Space);
-        aiming = Input.GetMouseButton(1);
+        //aiming = Input.GetMouseButton(1);
         fire = Input.GetMouseButton(0);
 
         if (Input.GetKeyDown(KeyCode.Alpha1))
@@ -129,6 +141,10 @@ public class PlayerController : Bolt.EntityEventListener<IPlayerState>
         {
             weapon = 1;
         }
+
+        Vector2 direction = Camera.main.ScreenToWorldPoint(Input.mousePosition) - rightShoulder.position;
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        weaponArmRotation = Quaternion.AngleAxis(angle, Vector3.forward);
 
         if (mouse)
         {
@@ -160,6 +176,8 @@ public class PlayerController : Bolt.EntityEventListener<IPlayerState>
         input.aiming = aiming;
         input.fire = fire;
 
+        input.weaponArmRotation = weaponArmRotation;
+
         input.yaw = yaw;
         input.pitch = pitch;
 
@@ -189,6 +207,18 @@ public class PlayerController : Bolt.EntityEventListener<IPlayerState>
             // move and save the resulting state
             var result = _motor.Move(cmd.Input.forward, cmd.Input.backward, cmd.Input.left, cmd.Input.right, cmd.Input.jump, cmd.Input.yaw);
 
+            if (entity.IsOwner)
+            {
+                rightShoulder.rotation = Quaternion.Slerp(rightShoulder.rotation, cmd.Input.weaponArmRotation, 1f);
+
+                //state.shoulderRightTransform.rotation = 
+
+
+                // Aiming with the Arm
+                //rightShoulder.rotation = Quaternion.Slerp(rightShoulder.rotation, cmd.Input.weaponArmRotation, 1f);
+            }
+
+
             // Doing the best i can
             result.position.z = 0;
 
@@ -207,10 +237,9 @@ public class PlayerController : Bolt.EntityEventListener<IPlayerState>
                 state.weapon = cmd.Input.weapon;
                 state.Aiming = cmd.Input.aiming;
 
-                // deal with weapons
-                if (cmd.Input.aiming && cmd.Input.fire)
+                if (cmd.Input.fire)
                 {
-                    //FireWeapon(cmd);
+                    FireWeapon(cmd);
                 }
             }
 
@@ -224,6 +253,37 @@ public class PlayerController : Bolt.EntityEventListener<IPlayerState>
                 //Camera.main.transform.position = new Vector3(entity.transform.position.x, 15, -30);
             }
         }
+    }
+
+    void FireWeapon(Bolt.Command cmd)
+    {
+
+        state.Fire();
+
+        if (entity.IsOwner)
+        {
+            var projectile = BoltNetwork.Instantiate(BoltPrefabs.Projectile);
+            projectile.transform.SetPositionAndRotation(entity.transform.position, entity.transform.rotation);
+            /*projectile.transform.rotation = entity.transform.rotation;
+            projectile.transform.position = entity.transform.position;*/
+        }
+
+        /*if (activeWeapon.fireFrame + activeWeapon.refireRate <= BoltNetwork.ServerFrame)
+        {
+            activeWeapon.fireFrame = BoltNetwork.ServerFrame;
+
+            state.Fire();
+
+            // if we are the owner and the active weapon is a hitscan weapon, do logic
+            if (entity.IsOwner)
+            {
+                activeWeapon.OnOwner(cmd, entity);
+            }
+        }*/
+    }
+    void OnFire()
+    {
+        BoltConsole.Write("PlayerController:OnFire Event");
     }
 
 

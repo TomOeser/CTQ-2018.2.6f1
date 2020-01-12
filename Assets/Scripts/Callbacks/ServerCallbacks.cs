@@ -33,6 +33,10 @@ public class ServerCallbacks : Bolt.GlobalEventListener
         BoltConsole.Write("ServerCallbacks:SceneLoadRemoteDone");
         BoltConsole.Write("ServerCallbacks:SceneLoadLocalDone on Client done instantiating ClientPlayer");
         connection.GetPlayer().InstantiateEntity();
+
+        // TODO Player has loaded the map on its computer and a entity is created
+
+
         BoltConsole.Write("ServerCallbacks:SceneLoadLocalDone on Client done instantiating ClientPlayer done");
     }
 
