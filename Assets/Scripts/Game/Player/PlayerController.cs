@@ -31,6 +31,10 @@ public class PlayerController : Bolt.EntityEventListener<IPlayerState>
 
     Transform rightShoulder;
 
+    private int lastFireFrame;
+    [SerializeField]
+    private int refireRate = 10;
+
     void Awake()
     {
         _motor = GetComponent<PlayerMotor>();
@@ -257,29 +261,17 @@ public class PlayerController : Bolt.EntityEventListener<IPlayerState>
 
     void FireWeapon(Bolt.Command cmd)
     {
-
-        state.Fire();
-
-        if (entity.IsOwner)
+        if (lastFireFrame + refireRate <= BoltNetwork.ServerFrame)
         {
-            var projectile = BoltNetwork.Instantiate(BoltPrefabs.Projectile);
-            projectile.transform.SetPositionAndRotation(entity.transform.position, entity.transform.rotation);
-            /*projectile.transform.rotation = entity.transform.rotation;
-            projectile.transform.position = entity.transform.position;*/
-        }
-
-        /*if (activeWeapon.fireFrame + activeWeapon.refireRate <= BoltNetwork.ServerFrame)
-        {
-            activeWeapon.fireFrame = BoltNetwork.ServerFrame;
-
+            lastFireFrame = BoltNetwork.ServerFrame;
             state.Fire();
 
-            // if we are the owner and the active weapon is a hitscan weapon, do logic
             if (entity.IsOwner)
             {
-                activeWeapon.OnOwner(cmd, entity);
+                var projectile = BoltNetwork.Instantiate(BoltPrefabs.Projectile);
+                projectile.transform.SetPositionAndRotation(entity.transform.position, entity.transform.rotation);
             }
-        }*/
+        }
     }
     void OnFire()
     {
