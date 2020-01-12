@@ -38,6 +38,7 @@ public partial class Player : IDisposable
 
             // teleport
             entity.transform.position = RandomSpawn();
+            state.team = team;
         }
     }
 
@@ -80,21 +81,24 @@ public partial class Player : IDisposable
 
     public void InstantiateEntity()
     {
-        BoltConsole.Write("InstantiateEntity " + isServer);
+        BoltConsole.Write("Player:InstantiateEntity isServer: " + isServer);
         entity = BoltNetwork.Instantiate(BoltPrefabs.Player, new TestToken(), RandomSpawn(), Quaternion.identity);
 
         state.name = name;
         state.team = team; //redPlayers.Count() >= bluePlayers.Count() ? TEAM_BLUE : TEAM_RED;
+        state.name = LobbyPlayer.localPlayer.playerName;
+        state.team = LobbyPlayer.localPlayer.team;
 
         if (isServer)
         {
+            BoltConsole.Write("Player:InstantiateEntity We are on the Server. Entity created, taking the control of the Entity");
             entity.TakeControl(new TestToken());
         }
         else
         {
+            BoltConsole.Write("Player:InstantiateEntity We are on the Server Entity. created, assing the control of the Entity to client");
             entity.AssignControl(connection, new TestToken());
         }
-
         Spawn();
     }
 }

@@ -210,6 +210,7 @@ public partial class LobbyManager : Bolt.GlobalEventListener
         }
         else if (BoltNetwork.IsServer)
         {
+            // ist das ueberhaupt noetig?
             BoltConsole.Write(string.Format("LobbyManager:Connected Server connected: {0}", connection), Color.yellow);
             Debug.Log(string.Format("LobbyManager:Connected Server connected: {0}", connection));
 
@@ -222,6 +223,7 @@ public partial class LobbyManager : Bolt.GlobalEventListener
         connection.UserData = new Player();
         connection.GetPlayer().connection = connection;
         connection.GetPlayer().name = "CLIENT:" + connection.RemoteEndPoint.Port;
+        connection.SetStreamBandwidth(1024 * 1024);
     }
 
     public override void Disconnected(BoltConnection connection)

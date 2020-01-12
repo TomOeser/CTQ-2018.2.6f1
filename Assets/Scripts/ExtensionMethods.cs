@@ -9,4 +9,9 @@
 
         return (Player)connection.UserData;
     }
+
+    public static BoltConnection GetConnection(this BoltConnection connection)
+    {
+        return connection;
+    }
 }

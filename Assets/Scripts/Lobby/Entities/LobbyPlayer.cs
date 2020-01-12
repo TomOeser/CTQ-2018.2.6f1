@@ -58,8 +58,8 @@ public class LobbyPlayer : Bolt.EntityEventListener<ILobbyPlayerState>
 
     public override void ControlGained()
     {
-        BoltConsole.Write(string.Format("HERE LobbyPlayer.ControlGained"), Color.yellow);
-        Debug.Log(string.Format("HERE LobbyPlayer.ControlGained"));
+        BoltConsole.Write(string.Format("LobbyPlayer:ControlGained"), Color.yellow);
+        Debug.Log(string.Format("LobbyPlayer:ControlGained"));
 
         //readyButton.transform.GetChild(0).GetComponent<Text>().color = Color.white;
         SetupLocalPlayer();
@@ -111,6 +111,9 @@ public class LobbyPlayer : Bolt.EntityEventListener<ILobbyPlayerState>
 
     public void SetupLocalPlayer()
     {
+        BoltConsole.Write(string.Format("LobbyPlayer:SetupLocalPlayer"), Color.yellow);
+        Debug.Log(string.Format("LobbyPlayer:SetupLocalPlayer"));
+
         localPlayer = this;
 
         readyButton.transform.GetChild(0).GetComponent<Text>().text = "Ready";
@@ -144,6 +147,9 @@ public class LobbyPlayer : Bolt.EntityEventListener<ILobbyPlayerState>
     }
     public void SetupOtherPlayer()
     {
+        BoltConsole.Write(string.Format("LobbyPlayer:SetupOtherPlayer"), Color.yellow);
+        Debug.Log(string.Format("LobbyPlayer:SetupOtherPlayer"));
+
         readyButton.transform.GetChild(0).GetComponent<Text>().text = "...";
         readyButton.interactable = false;
         readyButton.gameObject.SetActive(false);

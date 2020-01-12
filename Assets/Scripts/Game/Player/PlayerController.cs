@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Reflection;
+using System;
 
 public class PlayerController : Bolt.EntityEventListener<IPlayerState>
 {
@@ -20,6 +22,9 @@ public class PlayerController : Bolt.EntityEventListener<IPlayerState>
     float pitch;
 
     PlayerMotor _motor;
+
+    //[SerializeField]
+    //BalanceSettings _balanceSettings;
 
     void Awake()
     {
@@ -50,6 +55,40 @@ public class PlayerController : Bolt.EntityEventListener<IPlayerState>
 
         // setup weapon
         //WeaponChanged();
+
+        //gameObject.GetComponent<MeshRenderer>().material.color = state.team == 0 ? Color.blue : Color.red;
+
+        if (entity.IsOwner)
+        {
+            // Using the Balancing-CSV to read out the values and place them into an Object for the player
+            // this then will get replicated due the IPlayerState
+
+            BoltConsole.Write("PlayerController:Attached Server: Updating BalanceSettings in State for added Player", Color.blue);
+            Type type = state.BalanceSettings.GetType();
+            foreach (CSVValue entry in CSVValueLookup.Instance.ValueList)
+            {
+                PropertyInfo info = type.GetProperty(entry.name);
+                if (info != null)
+                {
+                    info.SetValue(state.BalanceSettings, entry.value);
+                }
+            }
+
+            // Now the state.BalanceSettings-Object should contain all Values of the Properties
+            // which are defined in the BoltAssets.BalanceSettings-Object itself, only known properties are set
+
+            BoltConsole.Write("PlayerController:Attached Server: Replicate BalanceSettings now", Color.blue);
+            state.BalanceSettingsChanged();
+        }
+
+        state.OnBalanceSettingsChanged += OnBalanceSettingsChanged;
+    }
+
+    void OnBalanceSettingsChanged()
+    {
+        BoltConsole.Write("PlayerController:OnBalanceSettingsChanged Client: Event triggered", Color.magenta);
+        BoltConsole.Write("PlayerController:OnBalanceSettingsChanged Client: Updating PlayerMotor with new BalanceSettings", Color.magenta);
+        _motor.UpdateWithBalancingSettings(state.BalanceSettings);
     }
 
     public override void SimulateOwner()
@@ -58,17 +97,6 @@ public class PlayerController : Bolt.EntityEventListener<IPlayerState>
         {
             state.health = (byte)Mathf.Clamp(state.health + 1, 0, 100);
         }
-
-        /*
-        var speed = 5f;
-        var movement = Vector3.zero;
-        if (Input.GetKey(KeyCode.A)) { movement.x -= 1; }
-        if (Input.GetKey(KeyCode.D)) { movement.x += 1; }
-
-        if (movement != Vector3.zero)
-        {
-            transform.position = transform.position + (movement.normalized * speed * BoltNetwork.FrameDeltaTime);
-        }*/
     }
 
     void PollKeys(bool mouse)

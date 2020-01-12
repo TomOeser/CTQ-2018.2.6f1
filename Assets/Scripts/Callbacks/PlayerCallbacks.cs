@@ -30,6 +30,7 @@ public class PlayerCallbacks : Bolt.GlobalEventListener
     public override void ControlOfEntityGained(BoltEntity entity)
     {
         BoltLog.Info("PlayerCallbacks:ControlOfEntityGained: {0}", entity);
+
         // add audio listener to our character
         entity.gameObject.AddComponent<AudioListener>();
 
