@@ -76,6 +76,7 @@ public class CSVValueLookup : MonoBehaviour {
 		}
 	}
 
+	#if UNITY_EDITOR
 	[ContextMenu("Save CSV Values")]
 	public void SaveCSVValues(){
 		
@@ -89,6 +90,8 @@ public class CSVValueLookup : MonoBehaviour {
 		AssetDatabase.SaveAssets();
 		AssetDatabase.Refresh();
 	}
+	#endif 
+	
 }
 
 [System.Serializable]
