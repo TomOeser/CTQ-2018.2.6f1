@@ -3,7 +3,11 @@ guid: e5a17e0a4759baf4eb421a12298c352f
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - healthBar: {fileID: 1948325618617842, guid: 8a57fadb09b42124a86afe103576b33e,
+      type: 2}
+  - canvas: {instanceID: 0}
+  - instance: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
