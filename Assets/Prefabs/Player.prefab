@@ -58,6 +58,7 @@ GameObject:
   - component: {fileID: 114701603345657266}
   - component: {fileID: 143334541407188158}
   - component: {fileID: 114820374929398986}
+  - component: {fileID: 114955093303470270}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -498,6 +499,24 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 0
+--- !u!114 &114955093303470270
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1159813809393242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5a17e0a4759baf4eb421a12298c352f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  healthBar: {fileID: 1948325618617842, guid: 8a57fadb09b42124a86afe103576b33e, type: 2}
+  canvas: {fileID: 0}
+  instance: {fileID: 0}
+  hpHeightCorrectionY: 2
+  playerPosition: {x: 0, y: 0, z: 0}
+  healthBarPosition: {x: 0, y: 0, z: 0}
+  tempCurrentHP: 0
 --- !u!136 &136731723358954694
 CapsuleCollider:
   m_ObjectHideFlags: 1
