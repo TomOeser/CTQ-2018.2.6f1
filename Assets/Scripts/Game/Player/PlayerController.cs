@@ -35,6 +35,8 @@ public class PlayerController : Bolt.EntityEventListener<IPlayerState>
     [SerializeField]
     private int refireRate = 10;
 
+    private int health;
+
     void Awake()
     {
         _motor = GetComponent<PlayerMotor>();
@@ -96,8 +98,12 @@ public class PlayerController : Bolt.EntityEventListener<IPlayerState>
             state.BalanceSettingsChanged();
         }
 
+        health = (int) state.BalanceSettings.p_health;
+        state.health = health;
+
         // Adding the Eventlistener for BalanceSettingsUpdated which is called from the server if needed
         state.OnBalanceSettingsChanged += OnBalanceSettingsChanged;
+
     }
 
     public override void ControlGained()
@@ -115,16 +121,19 @@ public class PlayerController : Bolt.EntityEventListener<IPlayerState>
         _motor.UpdateWithBalancingSettings(state.BalanceSettings);
     }
 
-
+    public void OnHealthChanged()
+    {
+        
+    }
 
     // Since we have all entities created on the server, just the server is the owner
     // Here it ticks up the health over interval
     public override void SimulateOwner()
     {
-        if ((BoltNetwork.Frame % 5) == 0 && (state.Dead == false))
-        {
-            state.health = (byte)Mathf.Clamp(state.health + 1, 0, 100);
-        }
+        // if ((BoltNetwork.Frame % 5) == 0 && (state.Dead == false))
+        // {
+        //     state.health = (byte)Mathf.Clamp(state.health + 1, 0, 100);
+        // }
     }
 
     void PollKeys(bool mouse)
