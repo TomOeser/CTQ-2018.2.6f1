@@ -152,6 +152,7 @@ public class PlayerMotor : MonoBehaviour
             {
                 _state.jumpFrames = (byte)jumpTotalFrames;
                 _state.velocity += movingDir * movingSpeed;
+                _state.velocity.z = 0;
             }
 
             if (moving && _state.jumpFrames == 0)
@@ -184,6 +185,7 @@ public class PlayerMotor : MonoBehaviour
         _state.velocity.x = ApplyDrag(_state.velocity.x, drag.x);
         _state.velocity.y = ApplyDrag(_state.velocity.y, drag.y);
         _state.velocity.z = ApplyDrag(_state.velocity.z, drag.z);
+        _state.velocity.z = 0;
 
         // this might seem weird, but it actually gets around a ton of issues - we basically apply 
         // gravity on the Y axis on every frame to simulate instant gravity if you step over a ledge

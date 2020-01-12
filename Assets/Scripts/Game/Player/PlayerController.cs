@@ -4,6 +4,8 @@ using UnityEngine;
 using System.Reflection;
 using System;
 
+using Cinemachine;
+
 public class PlayerController : Bolt.EntityEventListener<IPlayerState>
 {
     const float MOUSE_SENSEITIVITY = 2f;
@@ -22,6 +24,8 @@ public class PlayerController : Bolt.EntityEventListener<IPlayerState>
     float pitch;
 
     PlayerMotor _motor;
+
+    CinemachineVirtualCamera cinemachineVirtualCamera;
 
     void Awake()
     {
@@ -82,12 +86,20 @@ public class PlayerController : Bolt.EntityEventListener<IPlayerState>
         state.OnBalanceSettingsChanged += OnBalanceSettingsChanged;
     }
 
+    public override void ControlGained()
+    {
+        cinemachineVirtualCamera = GameObject.Find("CM Cam").GetComponent<CinemachineVirtualCamera>();
+        cinemachineVirtualCamera.Follow = entity.transform;
+    }
+
     void OnBalanceSettingsChanged()
     {
         BoltConsole.Write("PlayerController:OnBalanceSettingsChanged Client: Event triggered", Color.magenta);
         BoltConsole.Write("PlayerController:OnBalanceSettingsChanged Client: Updating PlayerMotor with new BalanceSettings", Color.magenta);
         _motor.UpdateWithBalancingSettings(state.BalanceSettings);
     }
+
+
 
     // Since we have all entities created on the server, just the server is the owner
     // Here it ticks up the health over interval
@@ -136,8 +148,11 @@ public class PlayerController : Bolt.EntityEventListener<IPlayerState>
 
         IPlayerCommandInput input = PlayerCommand.Create();
 
-        input.forward = forward;
-        input.backward = backward;
+        //input.forward = forward;
+        //input.backward = backward;
+        input.forward = false;
+        input.backward = false;
+
         input.left = left;
         input.right = right;
         input.jump = jump;
@@ -174,6 +189,9 @@ public class PlayerController : Bolt.EntityEventListener<IPlayerState>
             // move and save the resulting state
             var result = _motor.Move(cmd.Input.forward, cmd.Input.backward, cmd.Input.left, cmd.Input.right, cmd.Input.jump, cmd.Input.yaw);
 
+            // Doing the best i can
+            result.position.z = 0;
+
             cmd.Result.position = result.position;
             cmd.Result.velocity = result.velocity;
             cmd.Result.jumpFrames = result.jumpFrames;
@@ -203,7 +221,7 @@ public class PlayerController : Bolt.EntityEventListener<IPlayerState>
 
             if (entity.HasControl)
             {
-                Camera.main.transform.position = new Vector3(entity.transform.position.x, 15, -30);
+                //Camera.main.transform.position = new Vector3(entity.transform.position.x, 15, -30);
             }
         }
     }
