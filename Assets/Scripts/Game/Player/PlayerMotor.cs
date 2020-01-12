@@ -87,6 +87,7 @@ public class PlayerMotor : MonoBehaviour
     public void UpdateWithBalancingSettings(BalanceSettings settings)
     {
         movingSpeed = settings.p_movespeed;
+        jumpForce = settings.p_flying_boost_strength;
     }
 
 

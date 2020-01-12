@@ -249,19 +249,19 @@ MonoBehaviour:
   - name: p_mana
     value: 3
   - name: p_respawn_timer
-    value: 10.5
+    value: 10
   - name: p_flying_speed
-    value: 10.5
+    value: 10
   - name: p_flying_boost_strength
-    value: 10.5
+    value: 50
   - name: p_projectile_damage
     value: 3
   - name: p_projectile_speed
-    value: 10.5
+    value: 10
   - name: p_faction
     value: 1
   - name: p_fire_rate
-    value: 10.5
+    value: 10
   - name: g_recepy_length
     value: 3
   - name: g_number_of_recepies
@@ -269,23 +269,23 @@ MonoBehaviour:
   - name: g_bounty_deaths
     value: 3
   - name: g_circle_unlock
-    value: 10.5
+    value: 10
   - name: g_team_size
     value: 3
   - name: u_health
     value: 3
   - name: u_movespeed
-    value: 10.5
+    value: 10
   - name: u_horn_decay
-    value: 10.5
+    value: 10
   - name: u_spawn_timer
-    value: 10.5
+    value: 10
   - name: d_movespeed
-    value: 10.5
+    value: 10
   - name: d_flight_height
-    value: 10.5
+    value: 10
   - name: d_struggle_start
-    value: 10.5
+    value: 10
 --- !u!4 &1845395226
 Transform:
   m_ObjectHideFlags: 0

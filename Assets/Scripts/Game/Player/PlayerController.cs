@@ -23,9 +23,6 @@ public class PlayerController : Bolt.EntityEventListener<IPlayerState>
 
     PlayerMotor _motor;
 
-    //[SerializeField]
-    //BalanceSettings _balanceSettings;
-
     void Awake()
     {
         _motor = GetComponent<PlayerMotor>();
@@ -63,7 +60,7 @@ public class PlayerController : Bolt.EntityEventListener<IPlayerState>
             // Using the Balancing-CSV to read out the values and place them into an Object for the player
             // this then will get replicated due the IPlayerState
 
-            BoltConsole.Write("PlayerController:Attached Server: Updating BalanceSettings in State for added Player", Color.blue);
+            BoltConsole.Write("PlayerController:Attached Server: Updating BalanceSettings in State for added Player", Color.green);
             Type type = state.BalanceSettings.GetType();
             foreach (CSVValue entry in CSVValueLookup.Instance.ValueList)
             {
@@ -77,10 +74,11 @@ public class PlayerController : Bolt.EntityEventListener<IPlayerState>
             // Now the state.BalanceSettings-Object should contain all Values of the Properties
             // which are defined in the BoltAssets.BalanceSettings-Object itself, only known properties are set
 
-            BoltConsole.Write("PlayerController:Attached Server: Replicate BalanceSettings now", Color.blue);
+            BoltConsole.Write("PlayerController:Attached Server: Replicate BalanceSettings now", Color.green);
             state.BalanceSettingsChanged();
         }
 
+        // Adding the Eventlistener for BalanceSettingsUpdated which is called from the server if needed
         state.OnBalanceSettingsChanged += OnBalanceSettingsChanged;
     }
 
@@ -91,6 +89,8 @@ public class PlayerController : Bolt.EntityEventListener<IPlayerState>
         _motor.UpdateWithBalancingSettings(state.BalanceSettings);
     }
 
+    // Since we have all entities created on the server, just the server is the owner
+    // Here it ticks up the health over interval
     public override void SimulateOwner()
     {
         if ((BoltNetwork.Frame % 5) == 0 && (state.Dead == false))
@@ -128,6 +128,8 @@ public class PlayerController : Bolt.EntityEventListener<IPlayerState>
         }
     }
 
+    // This is called on the Client eg. the "Controller" because at instantiation we gave the control to the player
+    // The server is also controlling just its player-entity, so also the server calls this function for its entity
     public override void SimulateController()
     {
         PollKeys(false);
@@ -150,8 +152,10 @@ public class PlayerController : Bolt.EntityEventListener<IPlayerState>
         input.Token = new TestToken();
 
         entity.QueueInput(input);
-
     }
+
+    // This function is called on the server after a player does some action in the SimulateController function and send out the command
+    // The Server interpret the input, change the values on the entity (because he is the owner) and then replicate it to all clients
     public override void ExecuteCommand(Bolt.Command c, bool resetState)
     {
         if (state.Dead)
@@ -195,6 +199,11 @@ public class PlayerController : Bolt.EntityEventListener<IPlayerState>
             if (entity.IsOwner)
             {
                 cmd.Result.Token = new TestToken();
+            }
+
+            if (entity.HasControl)
+            {
+                Camera.main.transform.position = new Vector3(entity.transform.position.x, 15, -30);
             }
         }
     }
