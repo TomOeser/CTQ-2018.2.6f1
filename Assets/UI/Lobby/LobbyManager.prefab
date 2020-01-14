@@ -1737,8 +1737,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b01502af0e4a1ab4995ecc2c7cc7e7bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minPlayers: 2
-  prematchCountdown: 5
+  minPlayers: 1
+  prematchCountdown: 1
   lobbyUIStartPanel: {fileID: 114085095210181070}
   lobbyUIServerPanel: {fileID: 114376857256893598}
   lobbyUIServerListPanel: {fileID: 114197007591864686}

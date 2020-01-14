@@ -10,7 +10,7 @@ public partial class LobbyManager : Bolt.GlobalEventListener
     public static LobbyManager Instance;
 
     [Header("Ready Check and Playercount")]
-    [SerializeField] private int minPlayers = 2;
+    [SerializeField] private int minPlayers = 1;
     [Tooltip("Time in seconds between all players ready and match start")]
     [SerializeField] [Range(0.0f, 10.0f)] private float prematchCountdown = 5.0f;
 
