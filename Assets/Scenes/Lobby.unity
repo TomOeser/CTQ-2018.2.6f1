@@ -210,6 +210,16 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114509867788058786, guid: 2395be494af1c6140a73b5ae5a160558,
+        type: 2}
+      propertyPath: minPlayers
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114509867788058786, guid: 2395be494af1c6140a73b5ae5a160558,
+        type: 2}
+      propertyPath: prematchCountdown
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2395be494af1c6140a73b5ae5a160558, type: 2}
   m_IsPrefabAsset: 0

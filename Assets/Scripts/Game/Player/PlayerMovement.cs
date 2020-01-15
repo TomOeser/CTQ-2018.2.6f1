@@ -1,155 +1,179 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.Collections;
 using UnityEngine;
 
 public class PlayerMovement : Bolt.EntityBehaviour<IPlayerState>
 {
-	bool localLeft;
-	bool localRight;
-	bool localJump;
-	bool localFire;
+    bool localLeft;
+    bool localRight;
+    bool localJump;
+    bool localFire;
+    bool localInteract;
+    float localHorizontalInput;
 
-	Vector3 localPosition = Vector3.zero;
+    Vector3 localPosition = Vector3.zero;
 
-	CharacterController _cc;
+    CharacterController cc;
 
-	float moveSpeed = 20f;
-	float jumpForce = 10f;
-	float gravity = 9.81f;
+    [Header("Debug Stuff")]
+    [SerializeField]
+    private Vector3 moveDirection = Vector3.zero;
+    [SerializeField]
+    private Vector3 velocity = Vector3.zero;
+    [SerializeField]
+    private float gravity = -9.81f;
 
-	Vector3 moveDirection = Vector3.zero;
+    [Header("Movement Settings")]
+    [SerializeField]
+    float moveSpeed = 20f;
+    [SerializeField]
+    private float jumpHeight = 80f;
 
-	public override void Attached()
-	{
-		state.SetTransforms(state.transform, transform);
-		_cc = transform.GetComponent<CharacterController>();
-	}
+    [Header("Gravity and Drag Settings")]
+    [SerializeField]
+    private float gravityMultiplier = 10f;
+    [SerializeField]
+    private Vector3 drag = new Vector3(1, 0, 1);
 
-	void PoolInput() {
-		localLeft = Input.GetKey(KeyCode.A);
-		localRight = Input.GetKey(KeyCode.D); 
-		localFire = Input.GetMouseButton(0);
-		localJump = Input.GetKey(KeyCode.Space) || Input.GetMouseButton(1);
-	}
+    [Header("Ground Check Settings")]
+    [SerializeField]
+    private Transform groundChecker;
+    [SerializeField]
+    private float groundCheckDistance = 0.02f;
+    [SerializeField]
+    private LayerMask whatIsGround;
+    [SerializeField]
+    private bool isGrounded;
 
-	public override void SimulateOwner()
-	{
-		// Lets kill all!
-		/*if (Input.GetKeyDown(KeyCode.K)) {
+
+    void Awake()
+    {
+        cc = transform.GetComponent<CharacterController>();
+        if (groundChecker == null)
+        {
+            groundChecker = transform.Find("GroundChecker");
+        }
+    }
+    void Update()
+    {
+        PoolInput();
+    }
+
+    public override void Attached()
+    {
+        state.SetTransforms(state.transform, transform);
+        //cc = transform.GetComponent<CharacterController>();
+
+        /*if (groundChecker == null)
+        {
+            groundChecker = transform.Find("GroundChecker");
+        }*/
+    }
+
+    void PoolInput()
+    {
+        localLeft = Input.GetKey(KeyCode.A);
+        localRight = Input.GetKey(KeyCode.D);
+        localFire = Input.GetMouseButton(0);
+        localJump = Input.GetKey(KeyCode.Space) || Input.GetMouseButton(1);
+        localInteract = Input.GetKey(KeyCode.F);
+        localHorizontalInput = Input.GetAxis("Horizontal");
+    }
+
+    public override void SimulateOwner()
+    {
+        // Lets kill all!
+        /*if (Input.GetKeyDown(KeyCode.K)) {
 			BoltNetwork.Detach(entity);
 			BoltNetwork.Destroy(gameObject);
 		}*/
-		//_cc = transform.GetComponent<CharacterController>();
-	}
+    }
 
-	public override void SimulateController()
-	{
-		PoolInput();
+    public override void SimulateController()
+    {
+        PoolInput();
 
-		IPlayerMovementCommandInput input = PlayerMovementCommand.Create();
+        IPlayerMovementCommandInput input = PlayerMovementCommand.Create();
 
-		input.Left = localLeft;
-		input.Right = localRight;
-		input.Fire = localFire;
-		input.Jump = localJump;
+        input.Left = localLeft;
+        input.Right = localRight;
+        input.Fire = localFire;
+        input.Jump = localJump;
+        input.Interact = localInteract;
+        input.Horizontal = localHorizontalInput;
 
-		entity.QueueInput(input);
-	}
+        entity.QueueInput(input);
+    }
 
-	public override void ExecuteCommand(Bolt.Command command, bool resetState)
-	{
-		PlayerMovementCommand cmd = (PlayerMovementCommand)command;
+    public override void ExecuteCommand(Bolt.Command command, bool resetState)
+    {
+        if (state.Dead)
+        {
+            return;
+        }
 
-		if (resetState)
-		{
-			SetMovementState(cmd.Result.Position, cmd.Result.Velocity, true, 0);
-		}
-		else
-		{
-			var hInput = CalcHorizontalInput(cmd.Input.Left, cmd.Input.Right);
-			moveDirection = new Vector3(hInput * moveSpeed, moveDirection.y, 0);
+        PlayerMovementCommand cmd = (PlayerMovementCommand)command;
 
-			
+        if (resetState)
+        {
+            SetMovementState(cmd.Result.Position, cmd.Result.Velocity, cmd.Result.IsGrounded, 0);
+            localJump = cmd.Input.Jump;
+            localInteract = cmd.Input.Interact;
+        }
+        else
+        {
+            isGrounded = Physics.CheckSphere(groundChecker.position, groundCheckDistance, whatIsGround, QueryTriggerInteraction.Ignore);
+            if (isGrounded && velocity.y < 0f)
+                velocity.y = 0f;
 
-			if (cmd.Input.Jump && _cc.isGrounded) {
-				Debug.LogWarning("GROUNDED AND JUMP!");
-				moveDirection.y += jumpForce;
-			} else if (!_cc.isGrounded) {
-				moveDirection.y = moveDirection.y - (gravity * BoltNetwork.FrameDeltaTime);
-			}
+            moveDirection = new Vector3(cmd.Input.Horizontal, 0, 0);
+            cc.Move(moveDirection * BoltNetwork.FrameDeltaTime * moveSpeed);
 
-			_cc.Move(moveDirection * BoltNetwork.FrameDeltaTime);
+            transform.position.Set(transform.position.x, transform.position.y, 0f);
 
-			//var movingDir = Move(cmd.Input.Left, cmd.Input.Right, cmd.Input.Jump);
+            if (cmd.Input.Jump && isGrounded)
+            {
+                velocity.y += Mathf.Sqrt(jumpHeight * -2f * gravity);
+            }
 
+            velocity = ApplyGravityTo(velocity, gravity, gravityMultiplier, BoltNetwork.FrameDeltaTime);
+            velocity = ApplyDragTo(velocity, drag, BoltNetwork.FrameDeltaTime);
+            cc.Move(velocity * BoltNetwork.FrameDeltaTime);
 
+            transform.position.Set(transform.position.x, transform.position.y, 0f);
 
+            cmd.Result.Position = transform.position;
+            cmd.Result.Velocity = velocity;
+            cmd.Result.IsGrounded = isGrounded;
+            cmd.Result.IsInteracting = cmd.Input.Interact;
 
-			/*if (cmd.Input.Jump && _cc.isGrounded) {
-				Debug.LogWarning("GROUNDED AND JUMP!");
-				movingDir.y += jumpForce;
-			} else if (!_cc.isGrounded) {
-				movingDir.y = movingDir.y - (gravity * BoltNetwork.FrameDeltaTime);
-			}
-			*/
+            if (entity.IsOwner)
+            {
+                cmd.Result.Token = new TestToken();
+            }
+        }
+    }
 
-			//var delta = movingDir.normalized * movingSpeed * BoltNetwork.FrameDeltaTime; 
-			//var delta = movingDir.normalized * movingSpeed * BoltNetwork.FrameDeltaTime;
+    private void SetMovementState(Vector3 position, Vector3 _velocity, bool _isGrounded, int jumpFrames)
+    {
+        position.z = 0f;
+        transform.position = position;
+        velocity = _velocity;
+        isGrounded = _isGrounded;
+    }
 
-			//_cc.Move(delta);
+    private Vector3 ApplyGravityTo(Vector3 vel, float gravity, float gravityMultiplier, float deltaTime)
+    {
+        vel.y += gravity * gravityMultiplier * deltaTime;
+        return vel;
+    }
 
-			/*if (cmd.Input.Jump && _cc.isGrounded) {
-				_cc.Move(new Vector3(0, 1, 0));
-			} else {
-				_cc.Move(new Vector3(0, -9.81f * BoltNetwork.FrameDeltaTime, 0));
-			}*/
-
-
-			/*localPosition = movingDir.normalized * movingSpeed * BoltNetwork.FrameDeltaTime; 
-			
-
-			transform.position = transform.position + localPosition;*/
-
-			cmd.Result.Position = transform.position;
-			cmd.Result.Velocity = Vector3.zero;
-
-			if (entity.IsOwner) {
-				cmd.Result.Token = new TestToken();
-			}
-		}
-	}
-
-	private Vector3 Move(bool left, bool right, bool jump) {
-		Vector3 movingDir = Vector3.zero;
-
-		if (left ^ right) {
-			movingDir.x = right ? +1 : -1;
-		}
-
-		return movingDir;
-	}
-
-	private float CalcHorizontalInput(bool left, bool right)
-	{
-		if (left ^ right) {
-			return right ? +1 : -1;
-		}
-		return 0;
-	}
-
-	private void SetMovementState(Vector3 position, Vector3 velocity, bool isGrounded, int jumpFrames)
-	{
-		transform.position = position;
-	}
-
-	// Use this for initialization
-	void Start()
-	{
-		
-	}
-	
-	// Update is called once per frame
-	void Update() {
-		
-	}
+    private Vector3 ApplyDragTo(Vector3 vel, Vector3 drag, float deltaTime)
+    {
+        vel.x /= 1 + drag.x * deltaTime;
+        vel.y /= 1 + drag.y * deltaTime;
+        vel.z /= 1 + drag.z * deltaTime;
+        return vel;
+    }
 }
